@@ -1,11 +1,7 @@
 import pygame
 from pygame import mixer
 from fighter import Fighter
-from assets.Characters import warrior
-from assets.Characters import martialHero
-from assets.Characters import medievalKnight
-from assets.Characters import medievalKing
-from assets.Characters import knight 
+from character import characters
 
 mixer.init()
 pygame.init()
@@ -70,9 +66,13 @@ def draw_health_bar(health, x, y):
   pygame.draw.rect(screen, YELLOW, (x, y, 400 * ratio, 30))
 
 
-#create two instances of fighters
-fighter_1 = Fighter(1, 200, 310, False, warrior.DATA, warrior.sheet, warrior.ANIMATION_STEPS, sword_fx)
-fighter_2 = Fighter(2, 700, 310, True, medievalKnight.DATA, medievalKnight.sheet, medievalKnight.ANIMATION_STEPS, sword_fx)
+#player selections
+character_p1 = characters['martialHero']
+character_p2 = characters['knight']
+
+# #create two instances of fighters
+fighter_1 = Fighter(1, 200, 310, False, character_p1)
+fighter_2 = Fighter(2, 700, 310, True, character_p2)
 
 #game loop
 run = True
@@ -126,8 +126,9 @@ while run:
     if pygame.time.get_ticks() - round_over_time > ROUND_OVER_COOLDOWN:
       round_over = False
       intro_count = 3
-      fighter_1 = Fighter(1, 200, 310, False, warrior.DATA, warrior.sheet, warrior.ANIMATION_STEPS, sword_fx)
-      fighter_2 = Fighter(2, 700, 310, True, medievalKnight.DATA, medievalKnight.sheet, medievalKnight.ANIMATION_STEPS, sword_fx)
+      fighter_1 = Fighter(1, 200, 310, False, character_p1)
+      fighter_2 = Fighter(2, 700, 310, True, character_p2)
+
 
   #event handler
   for event in pygame.event.get():

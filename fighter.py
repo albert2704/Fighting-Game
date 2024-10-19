@@ -1,15 +1,20 @@
 import pygame
 
 class Fighter():
-  def __init__(self, player, x, y, flip, data, sprite_sheet, animation_steps, sound):
+
+  def __init__(self, player, x, y, flip, Character):
     self.player = player
-    self.sizeX = data[0]
-    self.sizeY = data[1]
-    self.image_scaleX = data[2]
-    self.image_scaleY = data[3]
-    self.offset = data[4]
+    if player == 1:
+      self.DATA = [Character.SIZEX, Character.SIZEY, Character.scaleX, Character.scaleY, Character.OFFSET1]
+    else:
+      self.DATA = [Character.SIZEX, Character.SIZEY, Character.scaleX, Character.scaleY, Character.OFFSET2]
+    self.sizeX = self.DATA[0]
+    self.sizeY = self.DATA[1]
+    self.image_scaleX = self.DATA[2]
+    self.image_scaleY = self.DATA[3]
+    self.offset = self.DATA[4]
     self.flip = flip
-    self.animation_list = self.load_images(sprite_sheet, animation_steps)
+    self.animation_list = self.load_images(Character.sheet, Character.animation_steps)
     self.action = 0#0:idle #1:run #2:jump #3:attack1 #4: attack2 #5:attack3 #6:hit #7:death
     self.frame_index = 0
     self.image = self.animation_list[self.action][self.frame_index]
@@ -21,7 +26,7 @@ class Fighter():
     self.attacking = False
     self.attack_type = 0
     self.attack_cooldown = 0
-    self.attack_sound = sound
+    self.attack_sound = Character.sound
     self.hit = False
     self.health = 100
     self.alive = True
@@ -49,7 +54,6 @@ class Fighter():
 
     #get keypresses
     key = pygame.key.get_pressed()
-    print(key)
 
     #can only perform other actions if not currently attacking
     if self.attacking == False and self.alive == True and round_over == False:
