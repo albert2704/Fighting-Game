@@ -4,7 +4,7 @@ SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 600
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 # spear_img = pygame.image.load('assets/images/Huntress/Sprites/Spear.png').convert_alpha()
-spear_img = pygame.image.load('C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/images/Huntress/Sprites/Spear.png').convert_alpha()
+spear_img = pygame.image.load('assets/images/Huntress/Sprites/Spear.png').convert_alpha()
 class Fighter():
     def __init__(self, player, x, y, flip, Character):
         self.id=player

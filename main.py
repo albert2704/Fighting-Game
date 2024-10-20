@@ -36,23 +36,23 @@ round_over = False
 ROUND_OVER_COOLDOWN = 2000
 
 #load music and sounds
-pygame.mixer.music.load("C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/audio/music.mp3")
+pygame.mixer.music.load("assets/audio/music.mp3")
 # pygame.mixer.music.load("../assets/audio/music.mp3")
 pygame.mixer.music.set_volume(0)
 pygame.mixer.music.play(-1, 0.0, 5000)
-sword_fx = pygame.mixer.Sound("C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/audio/sword.wav")
+sword_fx = pygame.mixer.Sound("assets/audio/sword.wav")
 sword_fx.set_volume(0.2)
 
-bg_image = pygame.image.load("C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/images/background/background.jpg").convert_alpha()
-bg_home = pygame.image.load("C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/images/background/background.jpg").convert_alpha()
+bg_image = pygame.image.load("assets/images/background/background.jpg").convert_alpha()
+bg_home = pygame.image.load("assets/images/background/background.jpg").convert_alpha()
 
 #load vicory image
-victory_img = pygame.image.load("C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/images/icons/victory.png").convert_alpha()
+victory_img = pygame.image.load("assets/images/icons/victory.png").convert_alpha()
 
 #define font
-count_font = pygame.font.Font("C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/fonts/turok.ttf", 80)
-score_font = pygame.font.Font("C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/fonts/turok.ttf", 30)
-score_font_winner = pygame.font.Font("C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/fonts/turok.ttf", 70)
+count_font = pygame.font.Font("assets/fonts/turok.ttf", 80)
+score_font = pygame.font.Font("assets/fonts/turok.ttf", 30)
+score_font_winner = pygame.font.Font("assets/fonts/turok.ttf", 70)
 
 #function for drawing text
 def draw_text(text, font, text_col, x, y):
