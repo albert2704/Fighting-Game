@@ -239,7 +239,7 @@ class Spear(pygame.sprite.Sprite):
 
   def update(self):
     #debug
-    pygame.draw.rect(screen, (255, 0, 0), self.rect)
+    # pygame.draw.rect(screen, (255, 0, 0), self.rect)
 
     #move bullet
     self.rect.x += (self.direction * self.speed)
