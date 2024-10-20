@@ -2,7 +2,7 @@ import pygame
 from pygame import mixer
 from fighter import Fighter
 from character import characters
-
+from fighter import spear_group
 mixer.init()
 pygame.init()
 
@@ -31,12 +31,10 @@ ROUND_OVER_COOLDOWN = 2000
 
 #load music and sounds
 pygame.mixer.music.load("assets/audio/music.mp3")
-pygame.mixer.music.set_volume(0.5)
+pygame.mixer.music.set_volume(0)
 pygame.mixer.music.play(-1, 0.0, 5000)
 sword_fx = pygame.mixer.Sound("assets/audio/sword.wav")
-sword_fx.set_volume(0.5)
-magic_fx = pygame.mixer.Sound("assets/audio/magic.wav")
-magic_fx.set_volume(0.75)
+sword_fx.set_volume(0.2)
 
 #load background image
 bg_image = pygame.image.load("assets/images/background/background.jpg").convert_alpha()
@@ -67,8 +65,8 @@ def draw_health_bar(health, x, y):
 
 
 #player selections
-character_p1 = characters['martialHero']
-character_p2 = characters['knight']
+character_p1 = characters['warrior']
+character_p2 = characters['huntress']
 
 # #create two instances of fighters
 fighter_1 = Fighter(1, 200, 310, False, character_p1)
@@ -77,7 +75,6 @@ fighter_2 = Fighter(2, 700, 310, True, character_p2)
 #game loop
 run = True
 while run:
-
   clock.tick(FPS)
 
   #draw background
@@ -92,8 +89,8 @@ while run:
   #update countdown
   if intro_count <= 0:
     #move fighters
-    fighter_1.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, fighter_2, round_over)
-    fighter_2.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, fighter_1, round_over)
+    fighter_1.move(SCREEN_WIDTH, SCREEN_HEIGHT, fighter_2, round_over)
+    fighter_2.move(SCREEN_WIDTH, SCREEN_HEIGHT, fighter_1, round_over)
   else:
     #display count timer
     draw_text(str(intro_count), count_font, RED, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 3)
@@ -109,6 +106,9 @@ while run:
   #draw fighters
   fighter_1.draw(screen)
   fighter_2.draw(screen)
+
+  spear_group.update()
+  spear_group.draw(screen)
 
   #check for player defeat
   if round_over == False:
