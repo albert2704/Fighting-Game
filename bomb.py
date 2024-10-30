@@ -1,4 +1,5 @@
 import  random
+
 from fighter import Fighter
 
 import pygame
@@ -48,7 +49,7 @@ class Bomb:
     def update_bom(self):
         if self.falling:
             self.action = 0
-        if self.explode :
+        if self.explode:
             if not self.action :
                 self.frame_index = 0
             self.action = 1
@@ -61,7 +62,7 @@ class Bomb:
             self.y += self.speed
 
         # if self.y > self.screen.get_height() - 95 - 60:
-        if self.is_off_screen():
+        if self.is_off_screen() or self.explode:
             self.explode = True
             self.falling = False
 
@@ -80,13 +81,20 @@ class Bomb:
     def is_off_screen(self):
         """Kiểm tra xem hình vuông có di chuyển ra khỏi màn hình hay không."""
         return self.y > self.screen.get_height() - 95 - 60
+    def is_dropped_to_fighter(self, fighter):
+        # print("bomb " + str(self.rect))
+        # print("fighter" + str(fighter.rect))
+        return pygame.Rect((self.x, self.y, 50, 50)).colliderect(fighter.rect)
+
+
+
 
     def draw_explosion(self):
         """Vẽ vụ nổ (hình vuông lớn gấp đôi kích thước Bomb)."""
         explosion_size = self.width * 3  # Kích thước vụ nổ gấp đôi kích thước Bomb
         explosion_x = self.x + self.width // 2 - explosion_size // 2  # Tính toán vị trí x từ tâm
         explosion_y = self.y + self.height // 2 - explosion_size // 2  # Tính toán vị trí y từ tâm
-        #pygame.draw.rect(self.screen, (255, 255, 0),(explosion_x, explosion_y, explosion_size, explosion_size))  # Vẽ hình vuông vụ nổ
+        # pygame.draw.rect(self.screen, (255, 255, 0),(explosion_x, explosion_y, explosion_size, explosion_size))  # Vẽ hình vuông vụ nổ
         return pygame.Rect(explosion_x, explosion_y, explosion_size, explosion_size)
 
 

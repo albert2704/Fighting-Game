@@ -26,6 +26,7 @@ FPS = 40
 
 current_bomb = None
 f1_isHit = f2_isHit = False
+explosion_rect = None
 last_spawn_time = 0
 spawn_interval = random.uniform(1, 3)
 
@@ -252,7 +253,7 @@ def game_loop(player1, player2, mode):
                 fighter_2.move(SCREEN_WIDTH, SCREEN_HEIGHT, fighter_1, round_over)
 
                 if mode == 1:
-                    global current_bomb, last_spawn_time, spawn_interval, f1_isHit, f2_isHit
+                    global current_bomb, last_spawn_time, spawn_interval, f1_isHit, f2_isHit, explosion_rect
 
                     current_time = time.time()
 
@@ -266,20 +267,22 @@ def game_loop(player1, player2, mode):
                     if current_bomb:
                         current_bomb.move_down()  # Di chuyển Bomb xuống
                         current_bomb.update_bom()
+                        # current_bomb.draw_explosion()
                         current_bomb.drawbomb()  # Vẽ Bomb trên màn hình
 
                         # Kiểm tra nếu Bomb ra khỏi màn hình, xóa nó và tạo mới
-                        if current_bomb.is_off_screen():
+                        if current_bomb.is_off_screen() or current_bomb.is_dropped_to_fighter(fighter_1) or current_bomb.is_dropped_to_fighter(fighter_2):
+                            current_bomb.explode = True
                             explosion_rect = current_bomb.draw_explosion()
-                            if current_bomb.frame_index == 7:
-                                current_bomb = None  # Đặt lại để tạo Bomb mới ở lần tiếp theo
-                                f1_isHit = f2_isHit = False
-                                continue;
 
                             if not f1_isHit:
                                 f1_isHit = fighter_1.check_hit(explosion_rect)
                             if not f2_isHit:
                                 f2_isHit = fighter_2.check_hit(explosion_rect)
+                        if current_bomb.frame_index == 7:
+                            current_bomb = None  # Đặt lại để tạo Bomb mới ở lần tiếp theo
+                            f1_isHit = f2_isHit = False
+                            continue;
             else:
                 # Hiển thị bộ đếm
                 draw_text(str(intro_count), count_font, RED, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 3)
