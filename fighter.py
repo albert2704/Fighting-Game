@@ -3,8 +3,10 @@ import pygame
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 600
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-# spear_img = pygame.image.load('assets/images/Huntress/Sprites/Spear.png').convert_alpha()
-spear_img = pygame.image.load('assets/images/Huntress/Sprites/Spear.png').convert_alpha()
+
+spear_img = pygame.image.load('assets/images/Huntress/Sprites/Spear.png').convert_alpha();
+
+
 class Fighter():
     def __init__(self, player, x, y, flip, Character):
         self.id=player
@@ -42,28 +44,16 @@ class Fighter():
         self.direction = 1
         self.shoot_delay = 400  # Delay before shooting (in milliseconds)
         self.shoot_ready = False  # Ensure the attack cooldown only allows 1 spear at a time
-        self.shoot_start_time = 0 # Track when the shooting starts
+        self.shoot_start_time = 0  # Track when the shooting starts
         self.performing_action = False
-    def use_special_move(self):
-        if not self.special_move_ready:  
-          print("Player 1 cannot use special move yet.")  
-          return  
-        # Ví dụ sử dụng chiêu đòi hỏi mana  
-        if self.mana >= 20:  # Giả sử mỗi chiêu tốn 20 mana  
-          self.mana -= 20  
-          # Thực hiện chiêu  
-          print(f"Player {self.id} used special move.")  
-        else:  
-          print(f"Player {self.id} does not have enough mana!")
-    def increase_mana(self, amount):  
-      self.mana = min(100, self.mana + amount)  # Giới hạn mana tối đa là 100
     def load_images(self, sprite_sheet, animation_steps):
         animation_list = []
         for y, animation in enumerate(animation_steps):
             temp_img_list = []
             for x in range(animation):
                 temp_img = sprite_sheet.subsurface(x * self.sizeX, y * self.sizeY, self.sizeX, self.sizeY)
-                temp_img_list.append(pygame.transform.scale(temp_img, (self.sizeX * self.image_scaleX, self.sizeY * self.image_scaleY)))
+                temp_img_list.append(
+                    pygame.transform.scale(temp_img, (self.sizeX * self.image_scaleX, self.sizeY * self.image_scaleY)))
             animation_list.append(temp_img_list)
         return animation_list
 
@@ -88,23 +78,23 @@ class Fighter():
                 if key[pygame.K_w] and not self.jump:
                     self.vel_y = -30
                     self.jump = True
-                if self.hit == False and key[pygame.K_e] or key[pygame.K_r] or key[pygame.K_t] and self.attack_cooldown == 0:
-                  if key[pygame.K_e]:
-                      self.attack_type = 1
-                      self.attack(target)
-                  if key[pygame.K_r]:
-                      self.attack_type = 2
-                      self.attack(target)
-                  if key[pygame.K_t]:
-                      self.use_special_move()
-                      self.attack_type = 3
-                      if self.characterName == 'huntress':
-                        if not self.shoot_ready:
-                          self.shoot_ready = True
-                          self.shoot_start_time = pygame.time.get_ticks()  # Set start time for spear delay
-                          self.attacking = True  # Start attack animation
-                      else:
-                          self.attack(target)
+                if self.hit == False and key[pygame.K_e] or key[pygame.K_r] or key[
+                    pygame.K_t] and self.attack_cooldown == 0:
+                    if key[pygame.K_e]:
+                        self.attack_type = 1
+                        self.attack(target)
+                    if key[pygame.K_r]:
+                        self.attack_type = 2
+                        self.attack(target)
+                    if key[pygame.K_t]:
+                        self.attack_type = 3
+                        if self.characterName == 'huntress':
+                            if not self.shoot_ready:
+                                self.shoot_ready = True
+                                self.shoot_start_time = pygame.time.get_ticks()  # Set start time for spear delay
+                                self.attacking = True  # Start attack animation
+                        else:
+                            self.attack(target)
 
             if self.player == 2:
                 if key[pygame.K_LEFT]:
@@ -116,23 +106,25 @@ class Fighter():
                 if key[pygame.K_UP] and not self.jump:
                     self.vel_y = -30
                     self.jump = True
-                if self.hit == False and key[pygame.K_u] or key[pygame.K_i] or key[pygame.K_o] and self.attack_cooldown == 0:
-                  if key[pygame.K_u]:
-                      self.attack_type = 1
-                      self.attack(target)
-                  if key[pygame.K_i]:
-                      self.attack_type = 2
-                      self.attack(target)
-                  if key[pygame.K_o]:
-                      self.use_special_move()
-                      self.attack_type = 3
-                      if self.characterName == 'huntress':
-                          if not self.shoot_ready:
-                            self.shoot_ready = True
-                            self.shoot_start_time = pygame.time.get_ticks()  # Set start time for spear delay
-                            self.attacking = True  # Start attack animation
-                      else:
-                          self.attack(target)
+
+                if self.hit == False and key[pygame.K_u] or key[pygame.K_i] or key[
+                    pygame.K_o] and self.attack_cooldown == 0:
+                    if key[pygame.K_u]:
+                        self.attack_type = 1
+                        self.attack(target)
+                    if key[pygame.K_i]:
+                        self.attack_type = 2
+                        self.attack(target)
+                    if key[pygame.K_o]:
+                        self.attack_type = 3
+                        if self.characterName == 'huntress':
+                            if not self.shoot_ready:
+                                self.shoot_ready = True
+                                self.shoot_start_time = pygame.time.get_ticks()  # Set start time for spear delay
+                                self.attacking = True  # Start attack animation
+                        else:
+                            self.attack(target)
+
 
         self.vel_y += GRAVITY
         dy += self.vel_y
@@ -141,10 +133,10 @@ class Fighter():
             dx = -self.rect.left
         if self.rect.right + dx > screen_width:
             dx = screen_width - self.rect.right
-        if self.rect.bottom + dy > screen_height - 110:
+        if self.rect.bottom + dy > screen_height - 95:
             self.vel_y = 0
             self.jump = False
-            dy = screen_height - 110 - self.rect.bottom
+            dy = screen_height - 95 - self.rect.bottom
 
         if target.rect.centerx > self.rect.centerx:
             self.flip = False
@@ -158,7 +150,7 @@ class Fighter():
 
         self.rect.x += dx
         self.rect.y += dy
-   
+
         if self.shoot_ready:
             current_time = pygame.time.get_ticks()
             if current_time - self.shoot_start_time >= self.shoot_delay:  # Check delay
@@ -166,21 +158,28 @@ class Fighter():
                 self.shoot_ready = False  # Reset after shooting
                 self.attacking = False
                 self.attack_cooldown = 50
-              
 
     def fire_spear(self, target):
-        spear = Spear(target, self.rect.centerx + (0.1 * self.rect.size[0] * self.direction), self.rect.centery - 40, self.direction, self.flip)
+        spear = Spear(target, self.rect.centerx + (0.1 * self.rect.size[0] * self.direction), self.rect.centery - 40,
+                      self.direction, self.flip)
         spear_group.add(spear)
 
     def attack(self, target):
-      if self.attack_cooldown == 0 and self.mana > 0:
-        self.attacking = True
-        self.attack_sound.play()
-        attacking_rect = pygame.Rect(self.rect.centerx - (2 * self.rect.width * self.flip), self.rect.y, 2 * self.rect.width, self.rect.height)
-        if attacking_rect.colliderect(target.rect):
-            target.health -= 10
-            target.hit = True
-        self.mana -= 10  # Giả sử chiêu tốn 10 mana  
+        if self.attack_cooldown == 0:
+            self.attacking = True
+            self.attack_sound.play()
+            attacking_rect = pygame.Rect(self.rect.centerx - (2 * self.rect.width * self.flip), self.rect.y,
+                                         2 * self.rect.width, self.rect.height)
+            if attacking_rect.colliderect(target.rect):
+                target.health -= 10
+                target.hit = True
+
+    def check_hit(self, explosion_rect):
+        """Kiểm tra va chạm với vụ nổ."""
+        if self.rect.colliderect(explosion_rect):
+            self.health -= 15  # Giảm sức khỏe khi bị trúng
+            self.hit = True  # Đánh dấu là bị trúng
+
     def update(self):
         current_time = pygame.time.get_ticks()  
     
@@ -234,48 +233,51 @@ class Fighter():
             self.update_time = pygame.time.get_ticks()
 
     def draw(self, surface):
-      #debug
-      img = pygame.transform.flip(self.image, self.flip, False)  
-      surface.blit(img, (self.rect.x - (self.offset[0] * self.image_scaleX), self.rect.y - (self.offset[1] * self.image_scaleY)))       
+
+        # debug
+        # pygame.draw.rect(surface, (255, 0, 0), self.rect)
+
+        img = pygame.transform.flip(self.image, self.flip, False)
+        surface.blit(img, (
+        self.rect.x - (self.offset[0] * self.image_scaleX), self.rect.y - (self.offset[1] * self.image_scaleY)))
 
 class Spear(pygame.sprite.Sprite):
-  def __init__(self, target, x, y, direction, flip):
-    pygame.sprite.Sprite.__init__(self)
-    self.speed = 15
+    def __init__(self, target, x, y, direction, flip):
+        pygame.sprite.Sprite.__init__(self)
+        self.speed = 15
 
-    # Define the dimensions for the rect
-    self.rect = pygame.Rect((x, y, 150, 80))
-    self.rect.center = (x, y)
+        # Define the dimensions for the rect
+        self.rect = pygame.Rect((x, y, 150, 80))
+        self.rect.center = (x, y)
 
-    # Scale the image to match the size of the rect
-    self.image = pygame.transform.scale(spear_img, (self.rect.width * 1.5, self.rect.height))  
+        # Scale the image to match the size of the rect
+        self.image = pygame.transform.scale(spear_img, (self.rect.width * 1.5, self.rect.height))
 
-    # Flip the image
-    self.image = pygame.transform.flip(self.image, flip, False)
+        # Flip the image
+        self.image = pygame.transform.flip(self.image, flip, False)
 
-    self.rect.width = 100
-    self.rect.height = 80
-    self.target = target
-    self.direction = direction
+        self.rect.width = 100
+        self.rect.height = 80
+        self.target = target
+        self.direction = direction
 
+    def update(self):
+        # debug
+        # pygame.draw.rect(screen, (255, 0, 0), self.rect)
 
-  def update(self):
-    #debug
-    # pygame.draw.rect(screen, (255, 0, 0), self.rect)
+        # move bullet
+        self.rect.x += (self.direction * self.speed)
 
-    #move bullet
-    self.rect.x += (self.direction * self.speed)
+        # check if bullet has gone off screen
+        if self.rect.right < 0 or self.rect.left > SCREEN_WIDTH:
+            self.kill()
 
-    #check if bullet has gone off screen
-    if self.rect.right < 0 or self.rect.left > SCREEN_WIDTH:
-      self.kill()
-
-    #check collision with characters
-    if pygame.sprite.spritecollide(self.target, spear_group, False):
-      if self.target.alive:
-        self.target.health -= 5
-        self.target.hit = True
-        self.kill()
+        # check collision with characters
+        if pygame.sprite.spritecollide(self.target, spear_group, False):
+            if self.target.alive:
+                self.target.health -= 5
+                self.target.hit = True
+                self.kill()
 
 
 spear_group = pygame.sprite.Group()
