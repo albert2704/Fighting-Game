@@ -22,9 +22,10 @@ pygame.display.set_caption("Let's Fight!")
 
 #set framerate
 clock = pygame.time.Clock()
-FPS = 60
+FPS = 40
 
 current_bomb = None
+f1_isHit = f2_isHit = False
 last_spawn_time = 0
 spawn_interval = random.uniform(1, 3)
 
@@ -123,7 +124,7 @@ def main_menu():
 
 def character_select():
     selection = 0
-    options = ["Knight", "MartialHero", "MedievalKing", "MedievalKnight", "Warrior", "Huntress"]
+    options = ["Warrior", "MartialHero", "MedievalKing", "MedievalKnight", "Knight" , "Huntress"]
     while True:
 
         draw_home()
@@ -251,14 +252,13 @@ def game_loop(player1, player2, mode):
                 fighter_2.move(SCREEN_WIDTH, SCREEN_HEIGHT, fighter_1, round_over)
 
                 if mode == 1:
-                    global current_bomb, last_spawn_time, spawn_interval
+                    global current_bomb, last_spawn_time, spawn_interval, f1_isHit, f2_isHit
 
                     current_time = time.time()
 
                     if current_bomb is None:
                         if current_time - last_spawn_time >= spawn_interval:
-                            current_bomb = Bomb(screen,
-                                                pygame.image.load("assets/images/background/bomb.png").convert_alpha(),[4, 8])
+                            current_bomb = Bomb(screen, pygame.image.load("assets/images/background/bomb.png").convert_alpha(),[4, 8])
                             last_spawn_time = current_time  # Cập nhật thời gian tạo Bomb mới
                             spawn_interval = random.uniform(1, 3)
 
@@ -271,10 +271,15 @@ def game_loop(player1, player2, mode):
                         # Kiểm tra nếu Bomb ra khỏi màn hình, xóa nó và tạo mới
                         if current_bomb.is_off_screen():
                             explosion_rect = current_bomb.draw_explosion()
-                            current_bomb = None  # Đặt lại để tạo Bomb mới ở lần tiếp theo
-                            fighter_1.check_hit(explosion_rect)
-                            fighter_2.check_hit(explosion_rect)
+                            if current_bomb.frame_index == 7:
+                                current_bomb = None  # Đặt lại để tạo Bomb mới ở lần tiếp theo
+                                f1_isHit = f2_isHit = False
+                                continue;
 
+                            if not f1_isHit:
+                                f1_isHit = fighter_1.check_hit(explosion_rect)
+                            if not f2_isHit:
+                                f2_isHit = fighter_2.check_hit(explosion_rect)
             else:
                 # Hiển thị bộ đếm
                 draw_text(str(intro_count), count_font, RED, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 3)

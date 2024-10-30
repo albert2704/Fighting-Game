@@ -1,5 +1,5 @@
 import  random
-import time
+from fighter import Fighter
 
 import pygame
 
@@ -16,7 +16,7 @@ class Bomb:
         self.width = width
         self.height = height
         self.color = color
-        self.img_sheet= img_sheet
+        self.img_sheet = img_sheet
         self.step = animation_step
         self.frame_index = 0
         self.action = 0
@@ -33,7 +33,8 @@ class Bomb:
         self.y = -self.height  # Bắt đầu từ trên màn hình để di chuyển xuống
 
         # Tốc độ di chuyển của hình vuông
-        self.speed = 5
+        self.speed = 7
+        self.rect = pygame.Rect((self.x, self.y, width, height))
 
     def load_img(self, img_sheet , step):
         animation_list = []
@@ -47,12 +48,11 @@ class Bomb:
     def update_bom(self):
         if self.falling:
             self.action = 0
-        if self.explode:
+        if self.explode :
+            if not self.action :
+                self.frame_index = 0
             self.action = 1
-
-        self.frame_index = (self.frame_index +1) % len(self.img_animation[self.action])
-
-
+        self.frame_index = (self.frame_index + 1) % len(self.img_animation[self.action])
 
 
     def move_down(self):
@@ -60,24 +60,20 @@ class Bomb:
         if self.falling:
             self.y += self.speed
 
-        if self.y > self.screen.get_height() - 95 - 60:
+        # if self.y > self.screen.get_height() - 95 - 60:
+        if self.is_off_screen():
             self.explode = True
             self.falling = False
 
     def drawbomb(self):
-        x_img = 0
-        y_img = 0
         if self.falling:
             size = self.fire_size
-            x_img = self.x
-            y_img = self.y
+            x_img = self.x;
+            y_img = self.y;
         if self.explode:
             size = self.explode_size
-            self.frame_index = -1
             x_img = self.x + self.width // 2 - size // 2  # Tính toán vị trí x từ tâm
             y_img = self.y + self.height // 2 - size // 2  # Tính toán vị trí y từ tâm
-            self.frame_index = (self.frame_index + 1) % len(self.img_animation[self.action])
-            print(self.frame_index)
         resize_img = pygame.transform.scale(self.img_animation[self.action][self.frame_index], (size, size))
         self.screen.blit(resize_img, (x_img, y_img))
 

@@ -171,8 +171,9 @@ class Fighter():
     def check_hit(self, explosion_rect):
         """Kiểm tra va chạm với vụ nổ."""
         if self.rect.colliderect(explosion_rect):
-            self.health -= 15  # Giảm sức khỏe khi bị trúng
+            self.health -= 5  # Giảm sức khỏe khi bị trúng
             self.hit = True  # Đánh dấu là bị trúng
+        return self.hit
 
     def update(self):
         if self.health <= 0:
