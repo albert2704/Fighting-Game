@@ -13,9 +13,9 @@ class Fighter():
         self.special_move_ready = False  
         self.special_move_timer = pygame.time.get_ticks() 
         if player == 1:
-            self.DATA = [Character.SIZEX, Character.SIZEY, Character.scaleX, Character.scaleY, Character.OFFSET1]
+            self.DATA = [Character.SIZEX, Character.SIZEY, Character.scaleX, Character.scaleY, Character.OFFSET1, Character.information]
         else:
-            self.DATA = [Character.SIZEX, Character.SIZEY, Character.scaleX, Character.scaleY, Character.OFFSET2]
+            self.DATA = [Character.SIZEX, Character.SIZEY, Character.scaleX, Character.scaleY, Character.OFFSET2, Character.information]
         self.sizeX = self.DATA[0]
         self.sizeY = self.DATA[1]
         self.image_scaleX = self.DATA[2]
@@ -37,7 +37,8 @@ class Fighter():
         self.attack_sound = Character.sound
         self.hit = False
         self.health = 100
-        self.mana = 100  # Thêm thuộc tính mana 
+        self.mana = 100
+        self.information = self.DATA[5]
         self.alive = True
         self.characterName = Character.name
         self.direction = 1
@@ -90,23 +91,23 @@ class Fighter():
                 if key[pygame.K_w] and not self.jump:
                     self.vel_y = -30
                     self.jump = True
-                if self.hit == False and key[pygame.K_e] or key[pygame.K_r] or key[pygame.K_t] and self.attack_cooldown == 0:
-                  if key[pygame.K_e]:
-                      self.attack_type = 1
-                      self.attack(target)
-                  if key[pygame.K_r]:
-                      self.attack_type = 2
-                      self.attack(target)
-                  if key[pygame.K_t]:
-                      self.use_special_move()
-                      self.attack_type = 3
-                      if self.characterName == 'huntress':
-                        if not self.shoot_ready:
-                          self.shoot_ready = True
-                          self.shoot_start_time = pygame.time.get_ticks()  # Set start time for spear delay
-                          self.attacking = True  # Start attack animation
-                      else:
-                          self.attack(target)
+                if self.hit == False and key[pygame.K_e] or key[pygame.K_r] or key[
+                    pygame.K_t] and self.attack_cooldown == 0:
+                    if key[pygame.K_e]:
+                        self.attack_type = 1
+                        self.attack(target, self.attack_type)
+                    if key[pygame.K_r]:
+                        self.attack_type = 2
+                        self.attack(target, self.attack_type)
+                    if key[pygame.K_t]:
+                        self.attack_type = 3
+                        if self.characterName == 'Huntress':
+                            if not self.shoot_ready:
+                                self.shoot_ready = True
+                                self.shoot_start_time = pygame.time.get_ticks()  # Set start time for spear delay
+                                self.attacking = True  # Start attack animation
+                        else:
+                            self.attack(target, self.attack_type)
 
             if self.player == 2:
                 if key[pygame.K_LEFT]:
@@ -118,23 +119,23 @@ class Fighter():
                 if key[pygame.K_UP] and not self.jump:
                     self.vel_y = -30
                     self.jump = True
-                if self.hit == False and key[pygame.K_u] or key[pygame.K_i] or key[pygame.K_o] and self.attack_cooldown == 0:
-                  if key[pygame.K_u]:
-                      self.attack_type = 1
-                      self.attack(target)
-                  if key[pygame.K_i]:
-                      self.attack_type = 2
-                      self.attack(target)
-                  if key[pygame.K_o]:
-                      self.use_special_move()
-                      self.attack_type = 3
-                      if self.characterName == 'huntress':
-                          if not self.shoot_ready:
-                            self.shoot_ready = True
-                            self.shoot_start_time = pygame.time.get_ticks()  # Set start time for spear delay
-                            self.attacking = True  # Start attack animation
-                      else:
-                          self.attack(target)
+                if self.hit == False and key[pygame.K_u] or key[pygame.K_i] or key[
+                    pygame.K_o] and self.attack_cooldown == 0:
+                    if key[pygame.K_u]:
+                        self.attack_type = 1
+                        self.attack(target, self.attack_type)
+                    if key[pygame.K_i]:
+                        self.attack_type = 2
+                        self.attack(target, self.attack_type)
+                    if key[pygame.K_o]:
+                        self.attack_type = 3
+                        if self.characterName == 'Huntress':
+                            if not self.shoot_ready:
+                                self.shoot_ready = True
+                                self.shoot_start_time = pygame.time.get_ticks()  # Set start time for spear delay
+                                self.attacking = True  # Start attack animation
+                        else:
+                            self.attack(target, self.attack_type)
 
         self.vel_y += GRAVITY
         dy += self.vel_y
@@ -174,21 +175,22 @@ class Fighter():
                       self.direction, self.flip)
         spear_group.add(spear)
 
-    def attack(self, target):
-      if self.attack_cooldown == 0 and self.mana > 0:
-        self.attacking = True
-        self.attack_sound.play()
-        attacking_rect = pygame.Rect(self.rect.centerx - (2 * self.rect.width * self.flip), self.rect.y, 2 * self.rect.width, self.rect.height)
-        if attacking_rect.colliderect(target.rect):
-            target.health -= 10
-            target.hit = True
-        self.mana -= 10  # Giả sử chiêu tốn 10 mana  
-    
+    def attack(self, target, type):
+        if self.attack_cooldown == 0:
+            self.attacking = True
+            self.attack_sound.play()
+            attacking_rect = pygame.Rect(self.rect.centerx - (2 * self.rect.width * self.flip), self.rect.y,
+                                         2 * self.rect.width, self.rect.height)
+            if attacking_rect.colliderect(target.rect):
+                target.health -= self.information[type]
+                target.hit = True
+
     def check_hit(self, explosion_rect):
         """Kiểm tra va chạm với vụ nổ."""
         if self.rect.colliderect(explosion_rect):
-            self.health -= 15  # Giảm sức khỏe khi bị trúng
+            self.health -= 10  # Giảm sức khỏe khi bị trúng
             self.hit = True  # Đánh dấu là bị trúng
+        return self.hit
 
     def update(self):
         current_time = pygame.time.get_ticks()  
