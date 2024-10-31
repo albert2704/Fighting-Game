@@ -22,9 +22,11 @@ pygame.display.set_caption("Let's Fight!")
 
 #set framerate
 clock = pygame.time.Clock()
-FPS = 60
+FPS = 40
 
 current_bomb = None
+f1_isHit = f2_isHit = False
+explosion_rect = None
 last_spawn_time = 0
 spawn_interval = random.uniform(1, 3)
 
@@ -74,6 +76,22 @@ def draw_home():
   scaled_bg = pygame.transform.scale(bg_home, (SCREEN_WIDTH, SCREEN_HEIGHT))
   screen.blit(scaled_bg, (0, 0))
 
+def draw_info_attack(type_1, type_2, type_3):
+    attack_1 = "power attack 1 : " + str(type_1)
+    attack_2 = "power attack 2 : " + str(type_2)
+    attack_3 = "power attack 3 : " + str(type_3)
+    attack_1_x = SCREEN_WIDTH // 2 - score_font.size(attack_1)[0] // 2
+    attack_2_x = SCREEN_WIDTH // 2 - score_font.size(attack_2)[0] // 2
+    attack_3_x = SCREEN_WIDTH // 2 - score_font.size(attack_3)[0] // 2
+    attack_1_y = 350
+    attack_2_y = 400
+    attack_3_y = 450
+    draw_text(attack_1, score_font, RED, attack_1_x, attack_1_y)
+    draw_text(attack_2, score_font, RED, attack_2_x, attack_2_y)
+    draw_text(attack_3, score_font, RED, attack_3_x, attack_3_y)
+
+
+
 #function for drawing fighter health bars
 def draw_health_bar(health, x, y):
   ratio = health / 100
@@ -117,11 +135,12 @@ def main_menu():
                     selection = (selection + 1) % len(options)  # Di chuyển xuống
                 if event.key == pygame.K_RETURN:
                     if options[selection] == "Fighting":
-                        game_loop(characters['warrior'], characters['medievalKing'], 0)  # Bắt đầu trò chơi mặc định
+                        player1 = character_select("player 1")
+                        player2 = character_select("player 2")
+                        mode = mode_select()
+                        game_loop(player1, player2, mode)
                     elif options[selection] == "Options":
-                        player1 = character_select()
-                        player2 = character_select()
-                        game_loop(player1, player2, 1)
+                        continue # ông Thắng chẹck lại phần này
                     elif options[selection] == "Quit":
                         pygame.quit()
                         sys.exit()
@@ -129,16 +148,15 @@ def main_menu():
         pygame.display.update()
         clock.tick(FPS)
 
-def character_select():
-    selection = 0
-    options = ["Knight", "MartialHero", "MedievalKing", "MedievalKnight", "Warrior", "Huntress"]
+def mode_select():
+    selection = 0;
+    options = ["Normal", "Hard"]
     while True:
-
         draw_home()
-        title_text = "Choose Your Character"
-        title_x = SCREEN_WIDTH // 2 - count_font.size(title_text)[0] // 2
+        title= "Select mode game"
+        title_x = SCREEN_WIDTH // 2 - count_font.size(title)[0] // 2
         title_y = 100  # Đặt tiêu đề ở phía trên menu, khoảng 100 pixel từ trên xuống
-        draw_text(title_text, count_font, RED, title_x, title_y)
+        draw_text(title, count_font, RED, title_x, title_y)
 
         option_widths = [score_font.size(option)[0] for option in options]
         total_width = sum(option_widths) + (len(options) - 1) * 20  # Tổng chiều rộng của tất cả các tùy chọn và khoảng cách giữa chúng
@@ -153,28 +171,81 @@ def character_select():
             draw_text(option, score_font, GREEN if i == selection else RED, x, menu_y)
             x += option_widths[i] + 20  # Di chuyển vị trí x cho tùy chọn tiếp theo
 
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
+                if event.key == pygame.K_LEFT :
                     selection = (selection - 1) % len(options)
-                if event.key == pygame.K_RIGHT:
+                if event.key == pygame.K_RIGHT :
                     selection = (selection + 1) % len(options)
-                if event.key == pygame.K_RETURN:
+                if event.key == pygame.K_RETURN :
+                    if options[selection] == "Normal":
+                        return 0
+                    if options[selection] == "Hard":
+                        return 1
+
+
+        pygame.display.update()
+        clock.tick(FPS)
+
+
+
+def character_select(player):
+    selection = 0
+    options = ["Warrior", "MartialHero", "MedievalKing", "MedievalKnight", "Knight" , "Huntress"]
+    while True:
+        draw_home()
+        title= "Choose Your Character"
+        title_x = SCREEN_WIDTH // 2 - count_font.size(title)[0] // 2
+        title_y = 100  # Đặt tiêu đề ở phía trên menu, khoảng 100 pixel từ trên xuống
+        draw_text(title, count_font, RED, title_x, title_y)
+        player_text = player
+        player_x = SCREEN_WIDTH // 2 - count_font.size(player_text)[0] // 2
+        player_y = title_y + 70  # Đặt cách dòng "Choose Your Character" 50 pixel bên dưới
+        draw_text(player_text, count_font, RED, player_x, player_y)
+
+
+        option_widths = [score_font.size(option)[0] for option in options]
+        total_width = sum(option_widths) + (len(options) - 1) * 20  # Tổng chiều rộng của tất cả các tùy chọn và khoảng cách giữa chúng
+
+        # Căn giữa theo chiều ngang
+        menu_start_x = (SCREEN_WIDTH - total_width) // 2
+        menu_y = SCREEN_HEIGHT // 2 - score_font.get_height() // 2  # Căn giữa theo chiều dọc
+
+        # Hiển thị từng tùy chọn
+        x = menu_start_x
+        for i, option in enumerate(options):
+            draw_text(option, score_font, GREEN if i == selection else RED, x, menu_y)
+            x += option_widths[i] + 20  # Di chuyển vị trí x cho tùy chọn tiếp theo
+
+        draw_info_attack(characters[options[selection]].information[1], characters[options[selection]].information[2],characters[options[selection]].information[3])
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                    selection = (selection - 1) % len(options)
+                if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                    selection = (selection + 1) % len(options)
+                if event.key == pygame.K_RETURN or event.key == pygame.K_j:
                     if options[selection] == "Knight":
-                        return characters['knight']
+                        return characters['Knight']
                     if options[selection] == "MartialHero":
-                        return characters['martialHero']
+                        return characters['MartialHero']
                     if options[selection] == "MedievalKing":
-                        return characters['medievalKing']
+                        return characters['MedievalKing']
                     if options[selection] == "MedievalKnight":
-                        return characters['medievalKnight']
+                        return characters['MedievalKnight']
                     if options[selection] == "Warrior":
-                        return characters['warrior']
+                        return characters['Warrior']
                     if options[selection] == "Huntress":
-                        return characters['huntress']
+                        return characters['Huntress']
+
 
         pygame.display.update()
         clock.tick(FPS)
@@ -259,14 +330,13 @@ def game_loop(player1, player2, mode):
                 fighter_2.move(SCREEN_WIDTH, SCREEN_HEIGHT, fighter_1, round_over)
 
                 if mode == 1:
-                    global current_bomb, last_spawn_time, spawn_interval
+                    global current_bomb, last_spawn_time, spawn_interval, f1_isHit, f2_isHit, explosion_rect
 
                     current_time = time.time()
 
                     if current_bomb is None:
                         if current_time - last_spawn_time >= spawn_interval:
-                            current_bomb = Bomb(screen,
-                                                pygame.image.load("assets/images/background/bomb.png").convert_alpha(),[4, 8])
+                            current_bomb = Bomb(screen, pygame.image.load("assets/images/background/bomb.png").convert_alpha(),[4, 8])
                             last_spawn_time = current_time  # Cập nhật thời gian tạo Bomb mới
                             spawn_interval = random.uniform(1, 3)
 
@@ -274,15 +344,22 @@ def game_loop(player1, player2, mode):
                     if current_bomb:
                         current_bomb.move_down()  # Di chuyển Bomb xuống
                         current_bomb.update_bom()
+                        # current_bomb.draw_explosion()
                         current_bomb.drawbomb()  # Vẽ Bomb trên màn hình
 
                         # Kiểm tra nếu Bomb ra khỏi màn hình, xóa nó và tạo mới
-                        if current_bomb.is_off_screen():
+                        if current_bomb.is_off_screen() or current_bomb.is_dropped_to_fighter(fighter_1) or current_bomb.is_dropped_to_fighter(fighter_2):
+                            current_bomb.explode = True
                             explosion_rect = current_bomb.draw_explosion()
-                            current_bomb = None  # Đặt lại để tạo Bomb mới ở lần tiếp theo
-                            fighter_1.check_hit(explosion_rect)
-                            fighter_2.check_hit(explosion_rect)
 
+                            if not f1_isHit:
+                                f1_isHit = fighter_1.check_hit(explosion_rect)
+                            if not f2_isHit:
+                                f2_isHit = fighter_2.check_hit(explosion_rect)
+                        if current_bomb.frame_index == 7:
+                            current_bomb = None  # Đặt lại để tạo Bomb mới ở lần tiếp theo
+                            f1_isHit = f2_isHit = False
+                            continue;
             else:
                 # Hiển thị bộ đếm
                 draw_text(str(intro_count), count_font, RED, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 3)
@@ -368,8 +445,8 @@ def game_loop(player1, player2, mode):
 
 
 
-# Bắt đầu màn hình menu chính  
-main_menu()  
+# Bắt đầu màn hình menu chính
+main_menu()
 
-# Thoát pygame 
+# Thoát pygame
 pygame.quit()
