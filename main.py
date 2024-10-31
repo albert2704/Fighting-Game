@@ -22,7 +22,7 @@ pygame.display.set_caption("Let's Fight!")
 
 #set framerate
 clock = pygame.time.Clock()
-FPS = 60
+FPS = 120
 
 current_bomb = None
 last_spawn_time = 0
@@ -49,7 +49,7 @@ round_over = False
 ROUND_OVER_COOLDOWN = 2000
 
 #load music and sounds
-pygame.mixer.music.load("assets/audio/music.mp3")
+pygame.mixer.music.load("C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/audio/music.mp3")
 # <<<<<<< HEAD
 # # pygame.mixer.music.load("../assets/audio/music.mp3")
 # pygame.mixer.music.set_volume(0)
@@ -57,19 +57,19 @@ pygame.mixer.music.load("assets/audio/music.mp3")
 pygame.mixer.music.set_volume(0.3)
 # >>>>>>> origin/huy_dev
 pygame.mixer.music.play(-1, 0.0, 5000)
-sword_fx = pygame.mixer.Sound("assets/audio/sword.wav")
+sword_fx = pygame.mixer.Sound("C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/audio/sword.wav")
 sword_fx.set_volume(0.2)
 
-bg_image = pygame.image.load("assets/images/background/background3.png").convert_alpha()
-bg_home = pygame.image.load("assets/images/background/background4.jpg").convert_alpha()
+bg_image = pygame.image.load("C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/images/background/background3.png").convert_alpha()
+bg_home = pygame.image.load("C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/images/background/background4.jpg").convert_alpha()
 
 #load vicory image
-victory_img = pygame.image.load("assets/images/icons/victory.png").convert_alpha()
+victory_img = pygame.image.load("C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/images/icons/victory.png").convert_alpha()
 
 #define font
-count_font = pygame.font.Font("assets/fonts/turok.ttf", 80)
-score_font = pygame.font.Font("assets/fonts/turok.ttf", 30)
-score_font_winner = pygame.font.Font("assets/fonts/turok.ttf", 70)
+count_font = pygame.font.Font("C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/fonts/turok.ttf", 80)
+score_font = pygame.font.Font("C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/fonts/turok.ttf", 30)
+score_font_winner = pygame.font.Font("C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/fonts/turok.ttf", 70)
 
 #function for drawing text
 def draw_text(text, font, text_col, x, y):
@@ -223,8 +223,7 @@ def pause_menu(paused):
                     if options[selection] == "Resume":
                       paused = False  # Tiếp tục chơi
                     elif options[selection] == "Quit":
-                      pygame.quit()
-                      sys.exit()
+                      main_menu()
 
         # Hiển thị menu tạm dừng
         # Vẽ tiêu đề
@@ -305,7 +304,7 @@ def game_loop(player1, player2, mode):
                     if current_bomb is None:
                         if current_time - last_spawn_time >= spawn_interval:
                             current_bomb = Bomb(screen,
-                                                pygame.image.load("assets/images/background/bomb.png").convert_alpha(),[4, 8])
+                                                pygame.image.load("C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/images/background/bomb.png").convert_alpha(),[4, 8])
                             last_spawn_time = current_time  # Cập nhật thời gian tạo Bomb mới
                             spawn_interval = random.uniform(1, 3)
 
@@ -387,35 +386,22 @@ def game_loop(player1, player2, mode):
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:  # Nếu nhấn phím Space, tạm dừng trò chơi
                         paused = not paused  # Thay đổi trạng thái tạm dừng
+                    if event.key == pygame.K_t:  # Player 1 dùng chiêu  
+                      fighter_1.ability_t()
+                    if event.key == pygame.K_e:  # Player 1 tăng mana  
+                      fighter_1.ability_e(hit_successful=True)  # Tăng 10 mana  
+                    if event.key == pygame.K_r:  # Player 1 tăng mana  
+                      fighter_1.ability_r(hit_successful=True) # Tăng 5 mana  
+                    if event.key == pygame.K_o:  # Player 2 dùng chiêu  
+                      fighter_2.ability_o()
+                    if event.key == pygame.K_u:  # Player 2 tăng mana  
+                      fighter_2.ability_u(hit_successful=True)  # Tăng 10 mana  
+                    if event.key == pygame.K_i:  # Player 2 tăng mana  
+                      fighter_2.ability_i(hit_successful=True) # Tăng 5 mana  
 
             # Cập nhật hiển thị
             pygame.display.update()
             clock.tick(FPS)  # Đảm bảo trò chơi chạy với tốc độ khung hình ổn định
-
-# <<<<<<< HEAD
-#           # Xử lý sự kiện  
-#           for event in pygame.event.get():  
-#               if event.type == pygame.QUIT:  
-#                 run = False
-#               if event.type == pygame.KEYDOWN:  
-#                   if event.key == pygame.K_SPACE:  # Nếu nhấn phím Space, tạm dừng trò chơi  
-#                     paused = not paused  # Thay đổi trạng thái tạm dừng
-#                   if event.key == pygame.K_t:  # Player 1 dùng chiêu  
-#                     fighter_1.use_special_move()  
-#                   if event.key == pygame.K_e:  # Player 1 tăng mana  
-#                     fighter_1.increase_mana(10)  # Tăng 10 mana  
-#                   if event.key == pygame.K_r:  # Player 1 tăng mana  
-#                     fighter_1.increase_mana(5)  # Tăng 5 mana  
-#                   if event.key == pygame.K_o:  # Player 2 dùng chiêu  
-#                     fighter_2.use_special_move()  
-#                   if event.key == pygame.K_u:  # Player 2 tăng mana  
-#                     fighter_2.increase_mana(10)  # Tăng 10 mana  
-#                   if event.key == pygame.K_i:  # Player 2 tăng mana  
-#                     fighter_2.increase_mana(5)  # Tăng 5 mana  
-
-# =======
-# >>>>>>> origin/huy_dev
-
 
 # Bắt đầu màn hình menu chính  
 main_menu()  
