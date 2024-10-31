@@ -65,6 +65,7 @@ class Bomb:
             self.falling = False
 
     def drawbomb(self):
+        print(self.frame_index)
         x_img = 0
         y_img = 0
         if self.falling:
@@ -73,7 +74,7 @@ class Bomb:
             y_img = self.y
         if self.explode:
             size = self.explode_size
-            self.frame_index = -1
+            # self.frame_index = -1
             x_img = self.x + self.width // 2 - size // 2  # Tính toán vị trí x từ tâm
             y_img = self.y + self.height // 2 - size // 2  # Tính toán vị trí y từ tâm
             self.frame_index = (self.frame_index + 1) % len(self.img_animation[self.action])
