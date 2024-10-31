@@ -80,7 +80,7 @@ class Bomb:
 
     def is_off_screen(self):
         """Kiểm tra xem hình vuông có di chuyển ra khỏi màn hình hay không."""
-        return self.y > self.screen.get_height() - 95 - 60
+        return self.y > self.screen.get_height() - 95 - 50
     def is_dropped_to_fighter(self, fighter):
         # print("bomb " + str(self.rect))
         # print("fighter" + str(fighter.rect))
