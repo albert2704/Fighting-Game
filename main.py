@@ -23,7 +23,7 @@ pygame.display.set_caption("Let's Fight!")
 # set framerate
 clock = pygame.time.Clock()
 
-FPS = 40
+FPS = 80
 
 current_bomb = None
 f1_isHit = f2_isHit = False
@@ -35,10 +35,7 @@ spawn_interval = random.uniform(1, 3)
 RED = (255, 50, 0)
 YELLOW = (255, 255, 0)
 WHITE = (255, 255, 255)
-
-BLUE = (0, 0, 255)  # Màu xanh dương
-LIGHTBLUE = (173, 216, 230)
-WHITE = (255, 255, 255)
+OREANGE = (255, 128, 0)
 GREEN = (0, 255, 0)
 # define game variables
 intro_count = 3
@@ -51,12 +48,7 @@ ROUND_OVER_COOLDOWN = 2000
 pygame.mixer.music.load(
     "C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/audio/music.mp3"
 )
-# <<<<<<< HEAD
-# # pygame.mixer.music.load("../assets/audio/music.mp3")
-# pygame.mixer.music.set_volume(0)
-# =======
 pygame.mixer.music.set_volume(0.3)
-# >>>>>>> origin/huy_dev
 pygame.mixer.music.play(-1, 0.0, 5000)
 sword_fx = pygame.mixer.Sound(
     "C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/audio/sword.wav"
@@ -127,45 +119,41 @@ def draw_health_bar(health, x, y):
     ratio = health / 100
     pygame.draw.rect(screen, WHITE, (x - 2, y - 2, 404, 34))
     pygame.draw.rect(screen, RED, (x, y, 400, 30))
-
-    # <<<<<<< HEAD
-    #   pygame.draw.rect(screen, YELLOW, (x, y, 400 * ratio, 30))
-    # # Thanh mana
-    # def draw_mana_bar(mana, x, y):
-    #   ratio = mana / 100  # Giả sử mana tối đa là 100
-    #   pygame.draw.rect(screen, WHITE, (x - 2, y - 2, 404, 14))  # Khung thanh mana
-    #   pygame.draw.rect(screen, BLUE, (x, y, 400, 10))  # Thanh nền
-    #   pygame.draw.rect(screen, BLUE, (x, y, 400 * ratio, 10))  # Thanh mana
-    # # Hàm cho màn hình menu chính
-    # def main_menu():
-    #     selection = 0  # 0: Play, 1: Options, 2: Quit
-    #     options = ["Fighting", "Options", "Quit"]  # Danh sách các tùy chọn menu
-    #     while True:
-    #         # screen.fill(WHITE)  # Xóa màn hình
-    #         draw_home()
-    # =======
     pygame.draw.rect(screen, GREEN, (x, y, 400 * ratio, 30))
 
 
-# Hàm cho màn hình menu chính
-def main_menu():
-    selection = 0  # 0: Play, 1: Options, 2: Quit
-    options = ["Fighting", "Options", "Quit"]  # Danh sách các tùy chọn menu
-
-
-# >>>>>>> origin/huy_dev
 # Thanh mana
 def draw_mana_bar(mana, x, y):
-    ratio = mana / 100  # Giả sử mana tối đa là 100
-    pygame.draw.rect(screen, WHITE, (x - 2, y - 2, 404, 14))  # Khung thanh mana
-    pygame.draw.rect(screen, BLUE, (x, y, 400, 10))  # Thanh nền
-    pygame.draw.rect(screen, BLUE, (x, y, 400 * ratio, 10))  # Thanh mana
+    ratio = min(mana / 100, 1)  # Giả sử mana tối đa là 100
+    pygame.draw.rect(screen, WHITE, (x - 2, y - 2, 204, 14))  # Khung thanh mana
+    pygame.draw.rect(screen, OREANGE, (x, y, 200 * ratio, 10))  # Thanh mana
 
 
 # Hàm cho màn hình menu chính
+def show_guide_image():
+    guide_image = pygame.image.load(
+        "C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/images/background/guide.png"
+    ).convert()
+
+    while True:
+        screen.fill(WHITE)  # Lấp đầy màn hình bằng màu trắng
+        screen.blit(guide_image, (0, 0))  # Vẽ hình ảnh khi hiển thị
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    return  # Trở về menu chính
+
+        pygame.display.update()
+        clock.tick(FPS)
+
+
 def main_menu():
-    selection = 0  # 0: Play, 1: Options, 2: Quit
-    options = ["Fighting", "Options", "Quit"]  # Danh sách các tùy chọn menu
+    selection = 0  # 0: Play, 1: Guide, 2: Quit
+    options = ["Fighting", "Guide", "Quit"]  # Danh sách các tùy chọn menu
     while True:
         # screen.fill(WHITE)  # Xóa màn hình
         draw_home()
@@ -206,8 +194,8 @@ def main_menu():
                         player2 = character_select("player 2")
                         mode = mode_select()
                         game_loop(player1, player2, mode)
-                    elif options[selection] == "Options":
-                        continue  # ông Thắng chẹck lại phần này
+                    elif options[selection] == "Guide":
+                        show_guide_image()  # Gọi hàm để hiển thị hình ảnh hướng dẫn
                     elif options[selection] == "Quit":
                         pygame.quit()
                         sys.exit()
@@ -399,24 +387,12 @@ def game_loop(player1, player2, mode):
         if paused:  # Kiểm tra trạng thái tạm dừng
             paused = pause_menu(paused)
         else:
-            # <<<<<<< HEAD
-            #           # Vẽ nền
-            #           draw_bg()
-
-            #           # Hiển thị thanh sức khỏe
-            #           draw_health_bar(fighter_1.health, 20, 20)
-            #           draw_health_bar(fighter_2.health, 580, 20)
-            #           draw_mana_bar(fighter_1.mana, 20, 50)  # Vẽ thanh mana cho Player 1
-            #           draw_mana_bar(fighter_2.mana, 580, 50) # Vẽ thanh mana cho Player 2
-            #           draw_text("P1: " + str(score[0]), score_font, RED, 20, 60)
-            #           draw_text("P2: " + str(score[1]), score_font, RED, 580, 60)
-            # =======
             # Vẽ nền
             draw_bg()
-            # >>>>>>> origin/huy_dev
-            # Hiển thị thanh sức khỏe
             draw_health_bar(fighter_1.health, 20, 20)
             draw_health_bar(fighter_2.health, 580, 20)
+            draw_mana_bar(fighter_1.mana, 20, 52)  # Vẽ thanh mana cho Player 1
+            draw_mana_bar(fighter_2.mana, 580, 52)  # Vẽ thanh mana cho Player 2
             draw_text("P1: " + str(score[0]), score_font, RED, 20, 60)
             draw_text("P2: " + str(score[1]), score_font, RED, 580, 60)
 
@@ -436,7 +412,7 @@ def game_loop(player1, player2, mode):
                             current_bomb = Bomb(
                                 screen,
                                 pygame.image.load(
-                                    "assets/images/background/bomb.png"
+                                    "C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/images/background/bomb.png"
                                 ).convert_alpha(),
                                 [4, 8],
                             )
@@ -544,14 +520,10 @@ def game_loop(player1, player2, mode):
                         event.key == pygame.K_SPACE
                     ):  # Nếu nhấn phím Space, tạm dừng trò chơi
                         paused = not paused  # Thay đổi trạng thái tạm dừng
-                    if event.key == pygame.K_t:  # Player 1 dùng chiêu
-                        fighter_1.ability_t()
                     if event.key == pygame.K_e:  # Player 1 tăng mana
                         fighter_1.ability_e(hit_successful=True)  # Tăng 10 mana
                     if event.key == pygame.K_r:  # Player 1 tăng mana
                         fighter_1.ability_r(hit_successful=True)  # Tăng 5 mana
-                    if event.key == pygame.K_o:  # Player 2 dùng chiêu
-                        fighter_2.ability_o()
                     if event.key == pygame.K_u:  # Player 2 tăng mana
                         fighter_2.ability_u(hit_successful=True)  # Tăng 10 mana
                     if event.key == pygame.K_i:  # Player 2 tăng mana

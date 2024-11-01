@@ -17,9 +17,23 @@ class Fighter:
         self.special_move_timer = pygame.time.get_ticks()
         if player == 1:
 
-            self.DATA = [Character.SIZEX, Character.SIZEY, Character.scaleX, Character.scaleY, Character.OFFSET1, Character.information]
+            self.DATA = [
+                Character.SIZEX,
+                Character.SIZEY,
+                Character.scaleX,
+                Character.scaleY,
+                Character.OFFSET1,
+                Character.information,
+            ]
         else:
-            self.DATA = [Character.SIZEX, Character.SIZEY, Character.scaleX, Character.scaleY, Character.OFFSET2, Character.information]
+            self.DATA = [
+                Character.SIZEX,
+                Character.SIZEY,
+                Character.scaleX,
+                Character.scaleY,
+                Character.OFFSET2,
+                Character.information,
+            ]
 
         self.sizeX = self.DATA[0]
         self.sizeY = self.DATA[1]
@@ -59,62 +73,30 @@ class Fighter:
         self.shoot_start_time = 0  # Track when the shooting starts
         self.performing_action = False
 
-    def take_damage(self, amount):
-        self.health -= amount
-        if self.health < 0:
-            self.health = 0
-        print(f"{self.player} takes {amount} damage, health is now {self.health}.")
-
     def gain_mana(self, amount):
         self.mana += amount
         if self.mana > 100:
             self.mana = 100
-        print(f"{self.player} gains {amount} mana, mana is now {self.mana}.")
 
-    def use_mana(self, amount):
-        if self.mana >= amount:
-            self.mana -= amount
-            if self.mana < 0:
-                self.mana = 0
-            print(f"{self.player} uses {amount} mana, mana is now {self.mana}.")
-            return True
-        else:
-            print(f"{self.player} Không đủ mana.")
-            return False
 
-    # Abilities o and t - consume 20 mana each
-    def ability_o(self):
-        if self.use_mana(20):
-            print(f"{self.player} uses ability 'o'.")
-
-    def ability_t(self):
-        if self.use_mana(20):
-            print(f"{self.player} uses ability 't'.")
-            # Add ability-specific behavior here
-
-    # Abilities e, r, u, i - gain mana if they hit
     def ability_e(self, hit_successful):
         if hit_successful:
             self.gain_mana(10)
-            print(f"{self.player} successfully hits with ability 'e'.")
 
     def ability_r(self, hit_successful):
         if hit_successful:
             self.gain_mana(5)
-            print(f"{self.player} successfully hits with ability 'r'.")
 
     def ability_u(self, hit_successful):
         if hit_successful:
             self.gain_mana(10)
-            print(f"{self.player} successfully hits with ability 'u'.")
 
     def ability_i(self, hit_successful):
         if hit_successful:
             self.gain_mana(5)
-            print(f"{self.player} successfully hits with ability 'i'.")
 
-    def increase_mana(self, amount):  
-      self.mana = min(100, self.mana + amount)  # Giới hạn mana tối đa là 100
+    def increase_mana(self, amount):
+        self.mana = min(100, self.mana + amount)  # Giới hạn mana tối đa là 100
 
     def load_images(self, sprite_sheet, animation_steps):
         animation_list = []
@@ -158,8 +140,13 @@ class Fighter:
                     self.vel_y = -30
                     self.jump = True
 
-                if self.hit == False and key[pygame.K_e] or key[pygame.K_r] or key[
-                    pygame.K_t] and self.attack_cooldown == 0:
+                if (
+                    self.hit == False
+                    and key[pygame.K_e]
+                    or key[pygame.K_r]
+                    or key[pygame.K_t]
+                    and self.attack_cooldown == 0
+                ):
                     if key[pygame.K_e]:
                         self.attack_type = 1
                         self.attack(target, self.attack_type)
@@ -167,10 +154,9 @@ class Fighter:
                         self.attack_type = 2
 
                         self.attack(target, self.attack_type)
-                    if key[pygame.K_t]:
+                    if key[pygame.K_t] and (self.mana >= 20):
                         self.attack_type = 3
-                        if self.characterName == 'Huntress':
-
+                        if self.characterName == "Huntress":
                             if not self.shoot_ready:
                                 self.shoot_ready = True
                                 self.shoot_start_time = (
@@ -179,7 +165,9 @@ class Fighter:
                                 self.attacking = True  # Start attack animation
                         else:
                             self.attack(target, self.attack_type)
-
+                        self.mana -= 20
+                        if self.mana < 0:
+                            self.mana = 0
 
             if self.player == 2:
                 if key[pygame.K_LEFT]:
@@ -192,8 +180,13 @@ class Fighter:
                     self.vel_y = -30
                     self.jump = True
 
-                if self.hit == False and key[pygame.K_u] or key[pygame.K_i] or key[
-                    pygame.K_o] and self.attack_cooldown == 0:
+                if (
+                    self.hit == False
+                    and key[pygame.K_u]
+                    or key[pygame.K_i]
+                    or key[pygame.K_o]
+                    and self.attack_cooldown == 0
+                ):
 
                     if key[pygame.K_u]:
                         self.attack_type = 1
@@ -202,9 +195,9 @@ class Fighter:
                         self.attack_type = 2
 
                         self.attack(target, self.attack_type)
-                    if key[pygame.K_o]:
+                    if key[pygame.K_o] and (self.mana >= 20):
                         self.attack_type = 3
-                        if self.characterName == 'Huntress':
+                        if self.characterName == "Huntress":
                             if not self.shoot_ready:
                                 self.shoot_ready = True
                                 self.shoot_start_time = (
@@ -213,6 +206,9 @@ class Fighter:
                                 self.attacking = True  # Start attack animation
                         else:
                             self.attack(target, self.attack_type)
+                        self.mana -= 20
+                        if self.mana < 0:
+                            self.mana = 0
 
         self.vel_y += GRAVITY
         dy += self.vel_y
@@ -248,15 +244,16 @@ class Fighter:
                 self.attack_cooldown = 50
 
     def fire_spear(self, target):
-        spear = Spear(
-            target,
-            self.rect.centerx + (0.1 * self.rect.size[0] * self.direction),
-            self.rect.centery - 40,
-            self.direction,
-            self.flip,
-        )
-        spear_group.add(spear)
-
+        if self.mana >= 20:
+            spear = Spear(
+                target,
+                self.rect.centerx + (0.1 * self.rect.size[0] * self.direction),
+                self.rect.centery - 40,
+                self.direction,
+                self.flip,
+            )
+            spear_group.add(spear)
+            self.mana -= 20
 
     def attack(self, target, type):
         if self.attack_cooldown == 0:
