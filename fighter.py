@@ -5,7 +5,7 @@ SCREEN_HEIGHT = 600
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 spear_img = pygame.image.load(
-    "C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/images/Huntress/Sprites/Spear.png"
+    "assets/images/Huntress/Sprites/Spear.png"
 ).convert_alpha()
 
 
