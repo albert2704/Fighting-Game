@@ -46,38 +46,38 @@ ROUND_OVER_COOLDOWN = 2000
 
 # load music and sounds
 pygame.mixer.music.load(
-    "C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/audio/music.mp3"
+    "assets/audio/music.mp3"
 )
 pygame.mixer.music.set_volume(0.3)
 pygame.mixer.music.play(-1, 0.0, 5000)
 sword_fx = pygame.mixer.Sound(
-    "C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/audio/sword.wav"
+    "assets/audio/sword.wav"
 )
 sword_fx.set_volume(0.2)
 
 bg_image = pygame.image.load(
-    "C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/images/background/background3.png"
+    "assets/images/background/background3.png"
 ).convert_alpha()
 bg_home = pygame.image.load(
-    "C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/images/background/background4.jpg"
+    "assets/images/background/background4.jpg"
 ).convert_alpha()
 
 # load vicory image
 victory_img = pygame.image.load(
-    "C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/images/icons/victory.png"
+    "assets/images/icons/victory.png"
 ).convert_alpha()
 
 # define font
 count_font = pygame.font.Font(
-    "C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/fonts/turok.ttf",
+    "assets/fonts/turok.ttf",
     80,
 )
 score_font = pygame.font.Font(
-    "C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/fonts/turok.ttf",
+    "assets/fonts/turok.ttf",
     30,
 )
 score_font_winner = pygame.font.Font(
-    "C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/fonts/turok.ttf",
+    "assets/fonts/turok.ttf",
     70,
 )
 
@@ -132,7 +132,7 @@ def draw_mana_bar(mana, x, y):
 # Hàm cho màn hình menu chính
 def show_guide_image():
     guide_image = pygame.image.load(
-        "C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/images/background/guide.png"
+        "assets/images/background/guide.png"
     ).convert()
 
     while True:
@@ -412,7 +412,7 @@ def game_loop(player1, player2, mode):
                             current_bomb = Bomb(
                                 screen,
                                 pygame.image.load(
-                                    "C:/Users/Admin/OneDrive/Desktop/Python-PTIT/Fighting-Game-Python/assets/images/background/bomb.png"
+                                    "assets/images/background/bomb.png"
                                 ).convert_alpha(),
                                 [4, 8],
                             )
