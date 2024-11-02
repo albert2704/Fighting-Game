@@ -53,7 +53,9 @@ pygame.mixer.music.play(-1, 0.0, 5000)
 sword_fx = pygame.mixer.Sound("assets/audio/sword.wav")
 sword_fx.set_volume(0.2)
 
-bg_image = pygame.image.load("assets/images/background/background3.png").convert_alpha()
+background_1 = pygame.image.load("assets/images/background/background1.png").convert_alpha()
+background_2 = pygame.image.load("assets/images/background/bg2.jpg").convert_alpha()
+background_3 = pygame.image.load("assets/images/background/bg3.jpg").convert_alpha()
 bg_home = pygame.image.load("assets/images/background/background4.jpg").convert_alpha()
 
 #load vicory image
@@ -69,8 +71,8 @@ def draw_text(text, font, text_col, x, y):
   img = font.render(text, True, text_col)
   screen.blit(img, (x, y))
 #function for drawing background
-def draw_bg():
-  scaled_bg = pygame.transform.scale(bg_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
+def draw_bg(background):
+  scaled_bg = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
   screen.blit(scaled_bg, (0, 0))
 def draw_home():
   scaled_bg = pygame.transform.scale(bg_home, (SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -138,7 +140,8 @@ def main_menu():
                         player1 = character_select("player 1")
                         player2 = character_select("player 2")
                         mode = mode_select()
-                        game_loop(player1, player2, mode)
+                        background = background_select()
+                        game_loop(player1, player2, mode, background)
                     elif options[selection] == "Options":
                         continue # ông Thắng chẹck lại phần này
                     elif options[selection] == "Quit":
@@ -150,7 +153,7 @@ def main_menu():
 
 def mode_select():
     selection = 0;
-    options = ["Normal", "Hard"]
+    options = ["Normal", "Special"]
     while True:
         draw_home()
         title= "Select mode game"
@@ -184,7 +187,7 @@ def mode_select():
                 if event.key == pygame.K_RETURN :
                     if options[selection] == "Normal":
                         return 0
-                    if options[selection] == "Hard":
+                    if options[selection] == "Special":
                         return 1
 
 
@@ -250,6 +253,56 @@ def character_select(player):
         pygame.display.update()
         clock.tick(FPS)
 
+def background_select():
+    selection = 0
+    options = ["Mysterious Forest", "Battlefield", "Deserted City"]
+    while True:
+        title = "Choose Your Map"
+        title_x = SCREEN_WIDTH // 2 - count_font.size(title)[0] // 2
+        title_y = 100  # Đặt tiêu đề ở phía trên menu, khoảng 100 pixel từ trên xuống
+
+        option_widths = [score_font.size(option)[0] for option in options]
+        total_width = sum(option_widths) + (len(options) - 1) * 20  # Tổng chiều rộng của tất cả các tùy chọn và khoảng cách giữa chúng
+
+        # Căn giữa theo chiều ngang
+        menu_start_x = (SCREEN_WIDTH - total_width) // 2
+        menu_y = SCREEN_HEIGHT // 2 - score_font.get_height() // 2  # Căn giữa theo chiều dọc
+
+        if selection == 0 : draw_bg(background_1)
+        if selection == 1 : draw_bg(background_2)
+        if selection == 2 : draw_bg(background_3)
+        draw_text(title, count_font, RED, title_x, title_y)
+
+        # Hiển thị từng tùy chọn
+        x = menu_start_x
+        for i, option in enumerate(options):
+            draw_text(option, score_font, GREEN if i == selection else RED, x, menu_y)
+            x += option_widths[i] + 20  # Di chuyển vị trí x cho tùy chọn tiếp theo
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                    selection = (selection - 1) % len(options)
+                if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                    selection = (selection + 1) % len(options)
+                if event.key == pygame.K_RETURN or event.key == pygame.K_j:
+                    if selection == 0:
+                        return background_1
+                    if selection == 1:
+                        return  background_2
+                    if selection == 2:
+                        return background_3
+
+
+        pygame.display.update()
+        clock.tick(FPS)
+
+
+
+
 
 
 
@@ -258,7 +311,7 @@ def pause_menu(paused):
     options = ["Resume", "Quit"]
 
     while paused:
-        draw_bg()
+        draw_home()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -289,7 +342,7 @@ def pause_menu(paused):
         clock.tick(FPS)
 
 
-def game_loop(player1, player2, mode):
+def game_loop(player1, player2, mode, background):
     global intro_count, last_count_update, score, round_over, fighter_1, fighter_2  # Cập nhật biến toàn cục
 
     #player selections
@@ -315,7 +368,7 @@ def game_loop(player1, player2, mode):
           paused = pause_menu(paused)
         else:
             # Vẽ nền
-            draw_bg()
+            draw_bg(background)
 
             # Hiển thị thanh sức khỏe
             draw_health_bar(fighter_1.health, 20, 20)
@@ -400,7 +453,7 @@ def game_loop(player1, player2, mode):
                     # Kiểm tra xem người chơi nào đã thắng (đạt 2 điểm)
                     if (score[0] == 2 or score[1] == 2):
                         # Làm mới màn hình
-                        draw_bg()
+                        draw_bg(background)
                         winner = "Player 1 Wins!" if score[0] == 2 else "Player 2 Wins!"
                         # Lấy kích thước văn bản
                         text_width, text_height = score_font_winner.size(winner)
