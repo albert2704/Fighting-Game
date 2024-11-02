@@ -520,14 +520,6 @@ def game_loop(player1, player2, mode):
                         event.key == pygame.K_SPACE
                     ):  # Nếu nhấn phím Space, tạm dừng trò chơi
                         paused = not paused  # Thay đổi trạng thái tạm dừng
-                    if event.key == pygame.K_e:  # Player 1 tăng mana
-                        fighter_1.ability_e(hit_successful=True)  # Tăng 10 mana
-                    if event.key == pygame.K_r:  # Player 1 tăng mana
-                        fighter_1.ability_r(hit_successful=True)  # Tăng 5 mana
-                    if event.key == pygame.K_u:  # Player 2 tăng mana
-                        fighter_2.ability_u(hit_successful=True)  # Tăng 10 mana
-                    if event.key == pygame.K_i:  # Player 2 tăng mana
-                        fighter_2.ability_i(hit_successful=True)  # Tăng 5 mana
 
             # Cập nhật hiển thị
             pygame.display.update()
