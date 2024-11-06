@@ -15,6 +15,7 @@ class Fighter:
         self.player = player
         self.special_move_ready = False
         self.special_move_timer = pygame.time.get_ticks()
+        self.is_ability_active = False  # Thêm biến trạng thái  
         if player == 1:
 
             self.DATA = [
@@ -77,24 +78,6 @@ class Fighter:
         self.mana += amount
         if self.mana > 100:
             self.mana = 100
-
-
-    def ability_e(self, hit_successful):
-        if hit_successful and self.attack_cooldown == 0:
-            self.gain_mana(10)
-
-    def ability_r(self, hit_successful):
-        if hit_successful and self.attack_cooldown == 0:
-            self.gain_mana(5)
-
-    def ability_u(self, hit_successful):
-        if hit_successful and self.attack_cooldown == 0:
-            self.gain_mana(10)
-
-    def ability_i(self, hit_successful):
-        if hit_successful and self.attack_cooldown == 0:
-            self.gain_mana(5)
-
     def increase_mana(self, amount):
         self.mana = min(100, self.mana + amount)  # Giới hạn mana tối đa là 100
 
@@ -147,14 +130,15 @@ class Fighter:
                     or key[pygame.K_t]
                     and self.attack_cooldown == 0
                 ):
-                    if key[pygame.K_e]:
+                    if key[pygame.K_e] and not self.is_ability_active and self.attack_cooldown == 0:
                         self.attack_type = 1
+                        self.gain_mana(10)
                         self.attack(target, self.attack_type)
-                    if key[pygame.K_r]:
+                    if key[pygame.K_r] and not self.is_ability_active and self.attack_cooldown == 0:
                         self.attack_type = 2
-
+                        self.gain_mana(5)
                         self.attack(target, self.attack_type)
-                    if key[pygame.K_t] and (self.mana >= 20):
+                    if key[pygame.K_t] and (self.mana >= 20) and not self.is_ability_active:
                         self.attack_type = 3
                         if self.characterName == "Huntress":
                             if not self.shoot_ready:
@@ -190,10 +174,11 @@ class Fighter:
 
                     if key[pygame.K_u]:
                         self.attack_type = 1
+                        self.gain_mana(10)
                         self.attack(target, self.attack_type)
                     if key[pygame.K_i]:
                         self.attack_type = 2
-
+                        self.gain_mana(5)
                         self.attack(target, self.attack_type)
                     if key[pygame.K_o] and (self.mana >= 20):
                         self.attack_type = 3
@@ -231,7 +216,10 @@ class Fighter:
 
         if self.attack_cooldown > 0:
             self.attack_cooldown -= 2
-
+        # Thiết lập logic cho khi chiêu thức kết thúc  
+        if self.attack_type != 0 and (self.action in [3, 4, 5] and not self.alive):  
+            self.is_ability_active = False  # Kết thúc khả năng khi không còn hoạt động  
+            self.attack_cooldown = 50 
         self.rect.x += dx
         self.rect.y += dy
 
@@ -244,16 +232,14 @@ class Fighter:
                 self.attack_cooldown = 50
 
     def fire_spear(self, target):
-        if self.mana >= 20:
-            spear = Spear(
-                target,
-                self.rect.centerx + (0.1 * self.rect.size[0] * self.direction),
-                self.rect.centery - 40,
-                self.direction,
-                self.flip,
-            )
-            spear_group.add(spear)
-            self.mana -= 20
+        spear = Spear(
+            target,
+            self.rect.centerx + (0.1 * self.rect.size[0] * self.direction),
+            self.rect.centery - 40,
+            self.direction,
+            self.flip,
+        )
+        spear_group.add(spear)
 
     def attack(self, target, type):
         if self.attack_cooldown == 0:
@@ -306,7 +292,10 @@ class Fighter:
 
         animation_cooldown = 50
         self.image = self.animation_list[self.action][self.frame_index]
-
+        if self.attack_type in [1, 2, 3] and self.attacking:  
+            self.is_ability_active = True  # Đánh dấu chiêu thức đang hoạt động  
+        else:  
+            self.is_ability_active = False  # Nếu không, cho phép sử dụng chiêu thứ khác  
         if pygame.time.get_ticks() - self.update_time > animation_cooldown:
             self.frame_index += 1
             self.update_time = pygame.time.get_ticks()
