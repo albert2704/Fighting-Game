@@ -172,15 +172,15 @@ class Fighter:
                     and self.attack_cooldown == 0
                 ):
 
-                    if key[pygame.K_u]:
+                    if key[pygame.K_u] and not self.is_ability_active and self.attack_cooldown == 0:
                         self.attack_type = 1
                         self.gain_mana(10)
                         self.attack(target, self.attack_type)
-                    if key[pygame.K_i]:
+                    if key[pygame.K_i] and not self.is_ability_active and self.attack_cooldown == 0:
                         self.attack_type = 2
                         self.gain_mana(5)
                         self.attack(target, self.attack_type)
-                    if key[pygame.K_o] and (self.mana >= 20):
+                    if key[pygame.K_o] and (self.mana >= 20) and not self.is_ability_active:
                         self.attack_type = 3
                         if self.characterName == "Huntress":
                             if not self.shoot_ready:
@@ -233,6 +233,7 @@ class Fighter:
 
     def fire_spear(self, target):
         spear = Spear(
+            self,
             target,
             self.rect.centerx + (0.1 * self.rect.size[0] * self.direction),
             self.rect.centery - 40,
@@ -335,7 +336,7 @@ class Fighter:
 
 
 class Spear(pygame.sprite.Sprite):
-    def __init__(self, target, x, y, direction, flip):
+    def __init__(self, current, target, x, y, direction, flip):
         pygame.sprite.Sprite.__init__(self)
         self.speed = 15
 
@@ -355,6 +356,7 @@ class Spear(pygame.sprite.Sprite):
         self.rect.height = 80
         self.target = target
         self.direction = direction
+        self.current = current
 
     def update(self):
         # debug
@@ -370,7 +372,7 @@ class Spear(pygame.sprite.Sprite):
         # check collision with characters
         if pygame.sprite.spritecollide(self.target, spear_group, False):
             if self.target.alive:
-                self.target.health -= 5
+                self.target.health -= self.current.information[3]
                 self.target.hit = True
                 self.kill()
 
